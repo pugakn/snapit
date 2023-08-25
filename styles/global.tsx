@@ -1,18 +1,34 @@
 import { StyleSheet } from 'react-native';
 
+export const globalTokens = {
+  storybuttonSize: 80,
+  gap: {
+    sm: 4,
+    md: 8,
+    lg: 16,
+    xl: 32,
+  },
+};
+
 export const globalStyles = StyleSheet.create({
-  mainContainer: {
-    flex: 1,
+  scrollContainer: {
     alignItems: 'center',
     justifyContent: 'flex-start',
-    padding: 20,
-    gap: 12,
+  },
+  fullContainer: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  mainContainer: {
+    alignItems: 'center',
+    justifyContent: 'flex-start',
+    padding: globalTokens.gap.lg,
   },
   horizontalContainer: {
-    width: '100%',
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    gap: 12,
+    gap: globalTokens.gap.lg,
   },
 });

@@ -1,19 +1,28 @@
 import { Camera, CameraCapturedPicture, CameraType } from 'expo-camera';
 import React, { useEffect, useRef, useState } from 'react';
 import { StyleSheet, View } from 'react-native';
-import { Button, Text } from 'react-native-paper';
+import { ActivityIndicator, Button, Text } from 'react-native-paper';
+
+import { globalStyles } from '../../styles/global';
 
 export default function CameraPage() {
-  const [hasPermission, setHasPermission] = useState<boolean | null>(null);
   const cameraRef = useRef<Camera>(null);
   const [photo, setPhoto] = useState<CameraCapturedPicture | undefined>(undefined);
+  const [permission, requestPermission] = Camera.useCameraPermissions();
 
   useEffect(() => {
-    (async () => {
-      const { status } = await Camera.requestPermissionsAsync();
-      setHasPermission(status === 'granted');
-    })();
-  }, []);
+    if (permission && !permission.granted) {
+      requestPermission();
+    }
+  }, [permission]);
+
+  if (!permission?.granted) {
+    return (
+      <View style={globalStyles.mainContainer}>
+        <ActivityIndicator animating={true} size="large" />
+      </View>
+    );
+  }
 
   const takePicture = async () => {
     if (cameraRef.current) {
@@ -22,26 +31,19 @@ export default function CameraPage() {
     }
   };
 
-  if (hasPermission === null) {
-    return <View />;
-  }
-
-  if (hasPermission === false) {
-    return <Text>No access to camera</Text>;
-  }
-
   return (
-    <View style={styles.container}>
+    <View style={globalStyles.fullContainer}>
       {photo ? (
-        <View style={styles.preview}>
-          <Text style={styles.previewText}>Photo taken!</Text>
+        <View style={globalStyles.mainContainer}>
+          <Text variant="headlineLarge" style={{ textAlign: 'center' }}>
+            You snapped it! come back latter for the next photo.
+          </Text>
+          <ActivityIndicator animating={true} />
         </View>
       ) : (
         <Camera style={styles.camera} type={'back' as CameraType} ref={cameraRef}>
           <View style={styles.buttonContainer}>
-            <Button style={styles.button} onPress={takePicture}>
-              Take photo
-            </Button>
+            <Button onPress={takePicture}>Take photo</Button>
           </View>
         </Camera>
       )}
@@ -50,31 +52,15 @@ export default function CameraPage() {
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-  },
   camera: {
     flex: 1,
+    width: '100%',
+    height: '100%',
   },
   buttonContainer: {
     flex: 1,
     backgroundColor: 'transparent',
     flexDirection: 'row',
     margin: 20,
-  },
-  button: {
-    flex: 0.1,
-    alignSelf: 'flex-end',
-    alignItems: 'center',
-  },
-  preview: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  previewText: {
-    fontSize: 30,
-    fontWeight: 'bold',
-    marginBottom: 20,
   },
 });

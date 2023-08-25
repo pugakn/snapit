@@ -1,5 +1,5 @@
 import React from 'react';
-import { FlatList, Image, ImageSourcePropType, View } from 'react-native';
+import { Image, ImageSourcePropType, TouchableOpacity, View } from 'react-native';
 import { useTheme } from 'react-native-paper';
 
 type ImageItem = {
@@ -17,32 +17,35 @@ const data: ImageItem[] = [
   { id: 7, source: require('../assets/favicon.png') },
   { id: 8, source: require('../assets/favicon.png') },
   { id: 9, source: undefined },
+  { id: 10, source: require('../assets/favicon.png') },
+  { id: 11, source: require('../assets/favicon.png') },
+  { id: 12, source: require('../assets/favicon.png') },
 ];
 
 export default function ImageGrid() {
   const { colors } = useTheme();
 
   const renderItem = ({ item }: { item: ImageItem }) => (
-    <View style={{ flex: 1, margin: 2 }}>
-      <Image
-        source={item.source}
-        style={{
-          width: '100%',
-          height: 'auto',
-          aspectRatio: 1,
-        }}
-        defaultSource={require('../assets/favicon.png')}
-      />
+    <View style={{ padding: 2, width: '33.33%' }}>
+      <TouchableOpacity onPress={() => {}} style={{ backgroundColor: colors.tertiary }}>
+        <Image
+          source={item.source}
+          style={{
+            width: '100%',
+            height: 'auto',
+            aspectRatio: 1,
+          }}
+          defaultSource={require('../assets/favicon.png')}
+        />
+      </TouchableOpacity>
     </View>
   );
 
   return (
-    <FlatList
-      data={data}
-      renderItem={renderItem}
-      keyExtractor={(item) => item.id.toString()}
-      numColumns={3}
-      contentContainerStyle={{ backgroundColor: colors.background }}
-    />
+    <View style={{ flex: 1, flexDirection: 'row', flexWrap: 'wrap', overflow: 'hidden' }}>
+      {data.map((item) => (
+        <React.Fragment key={item.id}>{renderItem({ item })}</React.Fragment>
+      ))}
+    </View>
   );
 }
