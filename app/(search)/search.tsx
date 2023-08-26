@@ -1,11 +1,14 @@
+import { useRouter } from 'expo-router';
 import { Text } from 'react-native';
 import { Button, TextInput } from 'react-native-paper';
 
 export default function Page() {
+  const router = useRouter();
+
   return (
     <>
       <Text>Pageasdasd</Text>
-      <Button>Holsssssa</Button>
+      <Button onPress={() => router.push('(search)/hola')}>Holsssssa</Button>
       <TextInput></TextInput>
     </>
   );

@@ -21,25 +21,32 @@ export default function RootLayout() {
   return (
     <PaperProvider theme={customTheme}>
       <Tabs
+        initialRouteName="/profile/camera"
+        backBehavior="history"
         screenOptions={{
           header: AppBarC,
           tabBarActiveTintColor: customTheme.colors.primary,
         }}>
         <Tabs.Screen
-          name="search/index"
+          name="(profile)"
           options={{
-            tabBarLabel: 'Search',
-            tabBarIcon: ({ color, size }) => <Ionicons name="search" size={size} color={color} />,
-            href: 'search',
+            tabBarLabel: 'Profile',
+            tabBarIcon: ({ color, size }) => <Ionicons name="home" size={size} color={color} />,
+            href: {
+              pathname: '/[user]',
+              params: {
+                user: 'pugakn',
+              },
+            },
+            headerTitle: 'Profile',
           }}
         />
         <Tabs.Screen
-          name="index"
+          name="(search)"
           options={{
-            tabBarLabel: 'Home',
-            tabBarIcon: ({ color, size }) => <Ionicons name="home" size={size} color={color} />,
-            href: '/',
-            headerTitle: 'Home',
+            tabBarLabel: 'Search',
+            tabBarIcon: ({ color, size }) => <Ionicons name="search" size={size} color={color} />,
+            href: '(search)',
           }}
         />
         <Tabs.Screen

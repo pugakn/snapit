@@ -1,17 +1,19 @@
 import { Ionicons } from '@expo/vector-icons';
+import { useRouter } from 'expo-router';
 import { useState } from 'react';
 import { NativeScrollEvent, NativeSyntheticEvent, ScrollView, View } from 'react-native';
 import { ActivityIndicator, Searchbar, Text, useTheme } from 'react-native-paper';
 
-import ImageGrid from '../components/imageGrid';
-import StoryButton from '../components/storyButton';
-import { globalStyles, globalTokens } from '../styles/global';
+import ImageGrid from '../../components/imageGrid';
+import StoryButton from '../../components/storyButton';
+import { globalStyles, globalTokens } from '../../styles/global';
 
 export default function Page() {
   const { colors } = useTheme();
   const [isLoading, setIsLoading] = useState(false);
   const [page, setPage] = useState(1);
   const [data, setData] = useState([]);
+  const router = useRouter();
 
   const totalPhotosTaken = 100; // replace with actual count
   const dayStreakCount = 5; // replace with actual count
@@ -35,7 +37,10 @@ export default function Page() {
     <ScrollView contentContainerStyle={globalStyles.scrollContainer} onScroll={handleScroll}>
       <View style={globalStyles.mainContainer}>
         <View style={globalStyles.horizontalContainer}>
-          <StoryButton size={globalTokens.storybuttonSize} />
+          <StoryButton
+            size={globalTokens.storybuttonSize}
+            onPress={() => router.push('profile/camera')}
+          />
           <StoryButton size={globalTokens.storybuttonSize} />
           <StoryButton size={globalTokens.storybuttonSize} />
         </View>

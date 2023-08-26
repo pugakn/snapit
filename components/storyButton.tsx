@@ -4,9 +4,10 @@ import { TouchableRipple, useTheme } from 'react-native-paper';
 
 interface StoryButtonProps {
   size: number;
+  onPress?: () => void;
 }
 
-export default function StoryButton({ size }: StoryButtonProps) {
+export default function StoryButton({ size, onPress }: StoryButtonProps) {
   const { colors } = useTheme();
 
   return (
@@ -18,7 +19,7 @@ export default function StoryButton({ size }: StoryButtonProps) {
           height: size,
           borderWidth: 0,
         }}
-        onPress={() => console.log('Button pressed')}>
+        onPress={onPress}>
         <LinearGradient
           colors={[colors.primary, colors.secondary, colors.tertiary]}
           start={[0, 0]}
