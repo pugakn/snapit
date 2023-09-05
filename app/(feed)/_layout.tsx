@@ -8,10 +8,6 @@ export const unstable_settings = {
 };
 
 export default function Layout({ segment }: any) {
-  if (segment === '(search)') {
-    return <Stack screenOptions={{}} initialRouteName="/search" />;
-  }
-
   return (
     <Stack
       screenOptions={{

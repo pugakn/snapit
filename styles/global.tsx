@@ -2,6 +2,7 @@ import { StyleSheet } from 'react-native';
 
 export const globalTokens = {
   storybuttonSize: 80,
+  profileImageSize: 100,
   gap: {
     sm: 4,
     md: 8,
@@ -27,6 +28,12 @@ export const globalStyles = StyleSheet.create({
   },
   horizontalContainer: {
     flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: globalTokens.gap.lg,
+  },
+  verticalContainer: {
+    flexDirection: 'column',
     alignItems: 'center',
     justifyContent: 'center',
     gap: globalTokens.gap.lg,

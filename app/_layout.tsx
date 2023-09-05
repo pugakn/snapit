@@ -28,17 +28,11 @@ export default function RootLayout() {
           tabBarActiveTintColor: customTheme.colors.primary,
         }}>
         <Tabs.Screen
-          name="(profile)"
+          name="(feed)"
           options={{
-            tabBarLabel: 'Profile',
-            tabBarIcon: ({ color, size }) => <Ionicons name="home" size={size} color={color} />,
-            href: {
-              pathname: '/[user]',
-              params: {
-                user: 'pugakn',
-              },
-            },
-            headerTitle: 'Profile',
+            tabBarLabel: 'Feed',
+            tabBarIcon: ({ color, size }) => <Ionicons name="list" size={size} color={color} />,
+            href: 'feed',
           }}
         />
         <Tabs.Screen
@@ -46,7 +40,22 @@ export default function RootLayout() {
           options={{
             tabBarLabel: 'Search',
             tabBarIcon: ({ color, size }) => <Ionicons name="search" size={size} color={color} />,
-            href: '(search)',
+            href: '(search)/search',
+          }}
+        />
+        <Tabs.Screen
+          name="(profile)"
+          options={{
+            tabBarLabel: 'Profile',
+            tabBarIcon: ({ color, size }) => <Ionicons name="person" size={size} color={color} />,
+            href: {
+              pathname: '/[user]',
+              params: {
+                user: 'pugakn',
+              },
+            },
+            headerTitle: 'Profile',
+            headerShown: false,
           }}
         />
         <Tabs.Screen
@@ -55,6 +64,12 @@ export default function RootLayout() {
             tabBarLabel: 'Settings',
             tabBarIcon: ({ color, size }) => <Ionicons name="settings" size={size} color={color} />,
             href: 'settings',
+          }}
+        />
+        <Tabs.Screen
+          name="camera/index"
+          options={{
+            href: 'null',
           }}
         />
       </Tabs>

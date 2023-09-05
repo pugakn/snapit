@@ -22,12 +22,18 @@ const data: ImageItem[] = [
   { id: 12, source: require('../assets/favicon.png') },
 ];
 
-export default function ImageGrid() {
+export default function ImageGrid({
+  onImageClick,
+}: {
+  onImageClick: (image: ImageSourcePropType) => any;
+}) {
   const { colors } = useTheme();
 
   const renderItem = ({ item }: { item: ImageItem }) => (
     <View style={{ padding: 2, width: '33.33%' }}>
-      <TouchableOpacity onPress={() => {}} style={{ backgroundColor: colors.tertiary }}>
+      <TouchableOpacity
+        onPress={(event) => onImageClick(item.source)}
+        style={{ backgroundColor: colors.tertiary }}>
         <Image
           source={item.source}
           style={{
