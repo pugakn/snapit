@@ -1,18 +1,9 @@
-import { Stack } from 'expo-router';
+import StackUser from '../../layouts/stackUser';
 
 export const unstable_settings = {
-  initialRouteName: 'index',
-  search: {
-    initialRouteName: 'search',
-  },
+  initialRouteName: 'feed',
 };
 
 export default function Layout({ segment }: any) {
-  return (
-    <Stack
-      screenOptions={{
-        headerShown: false,
-      }}
-    />
-  );
+  return <StackUser />;
 }

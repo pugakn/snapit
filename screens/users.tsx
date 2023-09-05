@@ -1,10 +1,9 @@
 import { useRouter } from 'expo-router';
 import { useState } from 'react';
-import { NativeScrollEvent, NativeSyntheticEvent, ScrollView } from 'react-native';
-import { ActivityIndicator, useTheme } from 'react-native-paper';
+import { useTheme } from 'react-native-paper';
 
+import { ScrollPagination } from '../components/scrollPagination';
 import UsersList from '../components/usersList';
-import { globalStyles, globalTokens } from '../styles/global';
 
 export default function Users({ type }: { type: 'followers' | 'following' }) {
   const { colors } = useTheme();
@@ -14,17 +13,8 @@ export default function Users({ type }: { type: 'followers' | 'following' }) {
 
   const router = useRouter();
 
-  const handleScroll = (event: NativeSyntheticEvent<NativeScrollEvent>) => {
-    const { layoutMeasurement, contentOffset, contentSize } = event.nativeEvent;
-    const offset = 50;
-    const isEndReached = layoutMeasurement.height + contentOffset.y >= contentSize.height - offset;
-    if (isEndReached) {
-      setIsLoading(true);
-      fetchMoreData();
-    }
-  };
-
   const fetchMoreData = async () => {
+    setIsLoading(true);
     await new Promise((resolve) => setTimeout(resolve, 2000));
     setIsLoading(false);
   };
@@ -57,7 +47,7 @@ export default function Users({ type }: { type: 'followers' | 'following' }) {
   ];
 
   return (
-    <ScrollView contentContainerStyle={globalStyles.scrollContainer} onScroll={handleScroll}>
+    <ScrollPagination fetchMoreData={fetchMoreData} isLoading={isLoading}>
       <UsersList
         type={type}
         users={users}
@@ -67,10 +57,6 @@ export default function Users({ type }: { type: 'followers' | 'following' }) {
           router.push(id);
         }}
       />
-
-      {isLoading && (
-        <ActivityIndicator size="large" style={{ marginVertical: globalTokens.gap.md }} />
-      )}
-    </ScrollView>
+    </ScrollPagination>
   );
 }

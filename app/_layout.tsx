@@ -21,7 +21,6 @@ export default function RootLayout() {
   return (
     <PaperProvider theme={customTheme}>
       <Tabs
-        initialRouteName="/profile/camera"
         backBehavior="history"
         screenOptions={{
           header: AppBarC,
@@ -30,9 +29,10 @@ export default function RootLayout() {
         <Tabs.Screen
           name="(feed)"
           options={{
+            headerShown: false,
             tabBarLabel: 'Feed',
             tabBarIcon: ({ color, size }) => <Ionicons name="list" size={size} color={color} />,
-            href: 'feed',
+            href: '(feed)/feed',
           }}
         />
         <Tabs.Screen
@@ -41,6 +41,7 @@ export default function RootLayout() {
             tabBarLabel: 'Search',
             tabBarIcon: ({ color, size }) => <Ionicons name="search" size={size} color={color} />,
             href: '(search)/search',
+            headerShown: false,
           }}
         />
         <Tabs.Screen
@@ -69,7 +70,7 @@ export default function RootLayout() {
         <Tabs.Screen
           name="camera/index"
           options={{
-            href: 'null',
+            href: null,
           }}
         />
       </Tabs>

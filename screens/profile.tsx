@@ -1,17 +1,12 @@
 import { Ionicons } from '@expo/vector-icons';
 import { Link, useGlobalSearchParams, useRouter } from 'expo-router';
 import { useState } from 'react';
-import {
-  ImageSourcePropType,
-  NativeScrollEvent,
-  NativeSyntheticEvent,
-  ScrollView,
-  View,
-} from 'react-native';
-import { ActivityIndicator, Portal, Searchbar, Text, useTheme } from 'react-native-paper';
+import { ImageSourcePropType, View } from 'react-native';
+import { Portal, Searchbar, Text, useTheme } from 'react-native-paper';
 
 import ImageGrid from '../components/imageGrid';
 import ImageModal from '../components/imageModal';
+import { ScrollPagination } from '../components/scrollPagination';
 import StoryButton from '../components/storyButton';
 import { globalStyles, globalTokens } from '../styles/global';
 
@@ -20,7 +15,11 @@ export default function Profile() {
   const [isLoading, setIsLoading] = useState(false);
   const [page, setPage] = useState(1);
   const [data, setData] = useState([]);
+
   const [selectedImage, setSelectedImage] = useState<ImageSourcePropType | undefined>(undefined);
+  const handleImageClick = (image: ImageSourcePropType) => {
+    setSelectedImage(image);
+  };
 
   const router = useRouter();
   const { user: userName } = useGlobalSearchParams();
@@ -28,26 +27,14 @@ export default function Profile() {
   const totalPhotosTaken = 100; // replace with actual count
   const dayStreakCount = 5; // replace with actual count
 
-  const handleScroll = (event: NativeSyntheticEvent<NativeScrollEvent>) => {
-    const { layoutMeasurement, contentOffset, contentSize } = event.nativeEvent;
-    const offset = 50;
-    const isEndReached = layoutMeasurement.height + contentOffset.y >= contentSize.height - offset;
-    if (isEndReached) {
-      setIsLoading(true);
-      fetchMoreData();
-    }
-  };
-  const handleImageClick = (image: ImageSourcePropType) => {
-    setSelectedImage(image);
-  };
-
   const fetchMoreData = async () => {
+    setIsLoading(true);
     await new Promise((resolve) => setTimeout(resolve, 2000));
     setIsLoading(false);
   };
 
   return (
-    <ScrollView contentContainerStyle={globalStyles.scrollContainer} onScroll={handleScroll}>
+    <ScrollPagination fetchMoreData={fetchMoreData} isLoading={isLoading}>
       <View style={globalStyles.mainContainer}>
         <View style={globalStyles.verticalContainer}>
           <View style={{ ...globalStyles.verticalContainer, gap: globalTokens.gap.sm }}>
@@ -122,9 +109,6 @@ export default function Profile() {
       <Portal>
         <ImageModal selectedImage={selectedImage} onExit={() => setSelectedImage(undefined)} />
       </Portal>
-      {isLoading && (
-        <ActivityIndicator size="large" style={{ marginVertical: globalTokens.gap.md }} />
-      )}
-    </ScrollView>
+    </ScrollPagination>
   );
 }
