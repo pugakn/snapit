@@ -2,10 +2,7 @@ import React from 'react';
 import { Image, ImageSourcePropType, TouchableOpacity, View } from 'react-native';
 import { useTheme } from 'react-native-paper';
 
-export type ImageItem = {
-  id: number;
-  source: ImageSourcePropType;
-};
+import { ImageItem } from '../types/global';
 
 export const GridItem = ({
   item,

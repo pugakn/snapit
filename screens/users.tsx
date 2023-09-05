@@ -3,7 +3,8 @@ import { useState } from 'react';
 import { useTheme } from 'react-native-paper';
 
 import { ScrollPagination } from '../components/scrollPagination';
-import UsersList from '../components/usersList';
+import UsersList from '../components/usersFollowList';
+import { TEST_USERS } from '../testData/global';
 
 export default function Users({ type }: { type: 'followers' | 'following' }) {
   const { colors } = useTheme();
@@ -19,38 +20,11 @@ export default function Users({ type }: { type: 'followers' | 'following' }) {
     setIsLoading(false);
   };
 
-  const users = [
-    {
-      isFollowing: true,
-      name: 'Aaron',
-      id: 'kjsahdjkaasdh',
-      avatar: require('../assets/favicon.png'),
-    },
-    {
-      isFollowing: true,
-      name: 'Aaron',
-      id: 'kjsaahdjkasdh',
-      avatar: require('../assets/favicon.png'),
-    },
-    {
-      isFollowing: true,
-      name: 'Aaron',
-      id: 'kjsahdjkasdha',
-      avatar: require('../assets/favicon.png'),
-    },
-    {
-      isFollowing: true,
-      name: 'Aaron',
-      id: 'kajsahdjkasdh',
-      avatar: require('../assets/favicon.png'),
-    },
-  ];
-
   return (
     <ScrollPagination fetchMoreData={fetchMoreData} isLoading={isLoading}>
       <UsersList
         type={type}
-        users={users}
+        users={TEST_USERS}
         onFollow={() => {}}
         onUnfollow={() => {}}
         onPress={(id) => {

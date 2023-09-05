@@ -1,12 +1,13 @@
 import { useRouter } from 'expo-router';
 import { useState } from 'react';
-import { ImageSourcePropType, View } from 'react-native';
+import { ImageSourcePropType } from 'react-native';
 import { Portal } from 'react-native-paper';
 
 import ImageGrid from '../../components/imageGrid';
 import ImageModal from '../../components/imageModal';
 import { ScrollPagination } from '../../components/scrollPagination';
-import { globalStyles } from '../../styles/global';
+import UserSearchBar from '../../components/usersSearchBar';
+import { globalTokens } from '../../styles/global';
 
 export default function Page() {
   const router = useRouter();
@@ -24,10 +25,8 @@ export default function Page() {
 
   return (
     <ScrollPagination fetchMoreData={fetchMoreData} isLoading={isLoading}>
-      <View style={globalStyles.mainContainer}>
-        <View style={globalStyles.verticalContainer}></View>
-      </View>
-      <ImageGrid onImageClick={handleImageClick} />
+      <UserSearchBar />
+      <ImageGrid onImageClick={handleImageClick} style={{ marginTop: globalTokens.gap.lg }} />
       <Portal>
         <ImageModal selectedImage={selectedImage} onExit={() => setSelectedImage(undefined)} />
       </Portal>
