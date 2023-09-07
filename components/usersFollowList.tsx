@@ -1,12 +1,12 @@
 import React from 'react';
 import { List } from 'react-native-paper';
 
-import { User } from '../types/global';
+import { User, UserListType } from '../types/global';
 import UsersListItem from './usersListItem';
 
 interface UsersListProps {
   users: User[];
-  type: 'followers' | 'following';
+  type: UserListType;
   onPress: (id: string) => void;
   onFollow: (id: string) => void;
   onUnfollow: (id: string) => void;

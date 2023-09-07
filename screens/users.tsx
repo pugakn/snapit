@@ -5,8 +5,9 @@ import { useTheme } from 'react-native-paper';
 import { ScrollPagination } from '../components/scrollPagination';
 import UsersList from '../components/usersFollowList';
 import { TEST_USERS } from '../testData/global';
+import { UserListType } from '../types/global';
 
-export default function Users({ type }: { type: 'followers' | 'following' }) {
+export default function Users({ type }: { type: UserListType }) {
   const { colors } = useTheme();
   const [isLoading, setIsLoading] = useState(false);
   const [page, setPage] = useState(1);

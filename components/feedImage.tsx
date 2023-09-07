@@ -1,25 +1,32 @@
 import { Link } from 'expo-router';
 import React from 'react';
 import { Image, View } from 'react-native';
-import { Avatar, Text } from 'react-native-paper';
+import { Avatar, Surface, Text } from 'react-native-paper';
 
-interface FeedImageProps {
-  imageUrl: string;
-  avatarUrl: string;
-  userName: string;
-}
+import { globalTokens } from '../styles/global';
+import { FeedImageType } from '../types/global';
 
-const FeedImage: React.FC<FeedImageProps> = ({ imageUrl, avatarUrl, userName }) => {
+const FeedImage: React.FC<FeedImageType> = ({ src, user }) => {
   return (
-    <View>
-      <Image source={{ uri: imageUrl }} style={{ width: '100%', height: 'auto', aspectRatio: 1 }} />
-      <Link href={`${userName}`}>
-        <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: 10 }}>
-          <Avatar.Image size={24} source={{ uri: avatarUrl }} />
-          <Text style={{ marginLeft: 10 }}>{userName}</Text>
+    <Surface elevation={1}>
+      <Image source={src} style={{ width: '100%', height: 'auto', aspectRatio: 1 }} />
+      <Link
+        href={`${user.name}`}
+        style={{
+          flexDirection: 'row',
+          alignItems: 'center',
+          padding: globalTokens.gap.lg,
+        }}>
+        <View
+          style={{
+            flexDirection: 'row',
+            alignItems: 'center',
+          }}>
+          <Avatar.Image size={24} source={user.avatar} />
+          <Text style={{ marginLeft: 10 }}>{user.name}</Text>
         </View>
       </Link>
-    </View>
+    </Surface>
   );
 };
 

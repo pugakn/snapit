@@ -12,3 +12,10 @@ export type ImageItem = {
   id: number;
   source: ImageSourcePropType;
 };
+
+export interface FeedImageType {
+  src: ImageSourcePropType;
+  user: User;
+}
+
+export type UserListType = 'followers' | 'following' | 'search';

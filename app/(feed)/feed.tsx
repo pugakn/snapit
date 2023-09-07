@@ -22,12 +22,7 @@ export default function Page() {
       <View style={globalStyles.mainContainer}>
         <View style={globalStyles.verticalContainer}>
           {TEST_FEED_IMAGES.map((image, index) => (
-            <FeedImage
-              key={index}
-              imageUrl={image.imageUrl}
-              avatarUrl={image.avatarUrl}
-              userName={image.userName}
-            />
+            <FeedImage key={index} src={image.src} user={image.user} />
           ))}
         </View>
       </View>

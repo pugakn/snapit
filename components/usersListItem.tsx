@@ -2,11 +2,11 @@ import React from 'react';
 import { View } from 'react-native';
 import { Avatar, Button, List, useTheme } from 'react-native-paper';
 
-import { User } from '../types/global';
+import { User, UserListType } from '../types/global';
 
 interface UsersListItemProps {
   user: User;
-  type: 'followers' | 'following' | 'search';
+  type: UserListType;
   onPress?: (id: string) => void;
   onFollow?: (id: string) => void;
   onUnfollow?: (id: string) => void;
