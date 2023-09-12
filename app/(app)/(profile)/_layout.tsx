@@ -1,7 +1,7 @@
-import StackUser from '../../layouts/stackUser';
+import StackUser from '../../../layouts/stackUser';
 
 export const unstable_settings = {
-  initialRouteName: 'feed',
+  initialRouteName: '[user]/index',
 };
 
 export default function Layout({ segment }: any) {

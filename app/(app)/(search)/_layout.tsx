@@ -1,4 +1,4 @@
-import StackUser from '../../layouts/stackUser';
+import StackUser from '../../../layouts/stackUser';
 
 export const unstable_settings = {
   initialRouteName: 'index',

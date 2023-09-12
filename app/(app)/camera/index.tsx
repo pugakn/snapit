@@ -3,7 +3,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import { StyleSheet, View } from 'react-native';
 import { ActivityIndicator, Button, Text } from 'react-native-paper';
 
-import { globalStyles } from '../../styles/global';
+import { globalStyles } from '../../../styles/global';
 
 export default function CameraPage() {
   const cameraRef = useRef<Camera>(null);

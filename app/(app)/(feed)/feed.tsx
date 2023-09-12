@@ -2,10 +2,10 @@ import { useRouter } from 'expo-router';
 import { useState } from 'react';
 import { View } from 'react-native';
 
-import FeedImage from '../../components/feedImage';
-import { ScrollPagination } from '../../components/scrollPagination';
-import { globalStyles } from '../../styles/global';
-import { TEST_FEED_IMAGES } from '../../testData/global';
+import FeedImage from '../../../components/feedImage';
+import { ScrollPagination } from '../../../components/scrollPagination';
+import { globalStyles } from '../../../styles/global';
+import { TEST_FEED_IMAGES } from '../../../testData/global';
 
 export default function Page() {
   const router = useRouter();

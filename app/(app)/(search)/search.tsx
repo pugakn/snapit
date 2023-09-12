@@ -3,11 +3,11 @@ import { useState } from 'react';
 import { ImageSourcePropType } from 'react-native';
 import { Portal } from 'react-native-paper';
 
-import ImageGrid from '../../components/imageGrid';
-import ImageModal from '../../components/imageModal';
-import { ScrollPagination } from '../../components/scrollPagination';
-import UserSearchBar from '../../components/usersSearchBar';
-import { globalTokens } from '../../styles/global';
+import ImageGrid from '../../../components/imageGrid';
+import ImageModal from '../../../components/imageModal';
+import { ScrollPagination } from '../../../components/scrollPagination';
+import UserSearchBar from '../../../components/usersSearchBar';
+import { globalTokens } from '../../../styles/global';
 
 export default function Page() {
   const router = useRouter();
