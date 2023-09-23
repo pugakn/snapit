@@ -7,7 +7,7 @@ import { applyMiddleware } from "graphql-middleware";
 
 import { resolvers } from "./resolvers/index.ts";
 import auth from "./resolvers/auth/index.ts";
-import { typeDefs } from "./schemas/index.ts";
+import typeDefs  from "./schemas/index.ts";
 import { EnvelopArmor } from "@escape.tech/graphql-armor";
 
 const env = Deno.env.toObject();
