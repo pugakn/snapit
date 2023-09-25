@@ -41,8 +41,14 @@ export default gql`
     userFeed(id: UUID!): [Post]
   }
 
+  type SignUpResponse {
+    profile: Profile!
+    refreshToken: String!
+    accessToken: String!
+  }
+
   type Mutation {
-    signup(username: String!, name: String!, email: String!, password: String!, avatar: Upload! ): Profile
+    signup(username: String!, name: String!, email: String!, password: String!, avatar: Upload! ): SignUpResponse
     postImage(asset: Upload!, description: String): Post
     deleteImage(id: UUID!): Boolean
   }

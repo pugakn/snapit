@@ -23,7 +23,7 @@ export type Mutation = {
   __typename?: 'Mutation';
   deleteImage?: Maybe<Scalars['Boolean']['output']>;
   postImage?: Maybe<Post>;
-  signup?: Maybe<Profile>;
+  signup?: Maybe<SignUpResponse>;
 };
 
 
@@ -100,6 +100,13 @@ export type S3Object = {
   bucket: Scalars['String']['output'];
   key: Scalars['String']['output'];
   region?: Maybe<Scalars['String']['output']>;
+};
+
+export type SignUpResponse = {
+  __typename?: 'SignUpResponse';
+  accessToken: Scalars['String']['output'];
+  profile: Profile;
+  refreshToken: Scalars['String']['output'];
 };
 
 
@@ -180,6 +187,7 @@ export type ResolversTypes = {
   Profile: ResolverTypeWrapper<Profile>;
   Query: ResolverTypeWrapper<{}>;
   S3Object: ResolverTypeWrapper<S3Object>;
+  SignUpResponse: ResolverTypeWrapper<SignUpResponse>;
   String: ResolverTypeWrapper<Scalars['String']['output']>;
   UUID: ResolverTypeWrapper<Scalars['UUID']['output']>;
   Upload: ResolverTypeWrapper<Scalars['Upload']['output']>;
@@ -194,6 +202,7 @@ export type ResolversParentTypes = {
   Profile: Profile;
   Query: {};
   S3Object: S3Object;
+  SignUpResponse: SignUpResponse;
   String: Scalars['String']['output'];
   UUID: Scalars['UUID']['output'];
   Upload: Scalars['Upload']['output'];
@@ -206,7 +215,7 @@ export interface DateTimeScalarConfig extends GraphQLScalarTypeConfig<ResolversT
 export type MutationResolvers<ContextType = any, ParentType extends ResolversParentTypes['Mutation'] = ResolversParentTypes['Mutation']> = {
   deleteImage?: Resolver<Maybe<ResolversTypes['Boolean']>, ParentType, ContextType, RequireFields<MutationDeleteImageArgs, 'id'>>;
   postImage?: Resolver<Maybe<ResolversTypes['Post']>, ParentType, ContextType, RequireFields<MutationPostImageArgs, 'asset'>>;
-  signup?: Resolver<Maybe<ResolversTypes['Profile']>, ParentType, ContextType, RequireFields<MutationSignupArgs, 'avatar' | 'email' | 'name' | 'password' | 'username'>>;
+  signup?: Resolver<Maybe<ResolversTypes['SignUpResponse']>, ParentType, ContextType, RequireFields<MutationSignupArgs, 'avatar' | 'email' | 'name' | 'password' | 'username'>>;
 };
 
 export type PostResolvers<ContextType = any, ParentType extends ResolversParentTypes['Post'] = ResolversParentTypes['Post']> = {
@@ -244,6 +253,13 @@ export type S3ObjectResolvers<ContextType = any, ParentType extends ResolversPar
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
+export type SignUpResponseResolvers<ContextType = any, ParentType extends ResolversParentTypes['SignUpResponse'] = ResolversParentTypes['SignUpResponse']> = {
+  accessToken?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  profile?: Resolver<ResolversTypes['Profile'], ParentType, ContextType>;
+  refreshToken?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
 export interface UuidScalarConfig extends GraphQLScalarTypeConfig<ResolversTypes['UUID'], any> {
   name: 'UUID';
 }
@@ -259,6 +275,7 @@ export type Resolvers<ContextType = any> = {
   Profile?: ProfileResolvers<ContextType>;
   Query?: QueryResolvers<ContextType>;
   S3Object?: S3ObjectResolvers<ContextType>;
+  SignUpResponse?: SignUpResponseResolvers<ContextType>;
   UUID?: GraphQLScalarType;
   Upload?: GraphQLScalarType;
 };

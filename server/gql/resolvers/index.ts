@@ -1,4 +1,8 @@
-import { Profile, Resolvers } from "../../../shared/generated/gql/types.ts";
+import {
+  Profile,
+  Resolvers,
+  SignUpResponse,
+} from "../../../shared/generated/gql/types.ts";
 import { generateFileId } from "../../utils/storage.ts";
 import { Context } from "../types.ts";
 import { Image } from "https://deno.land/x/imagescript@1.2.15/mod.ts";
@@ -43,7 +47,12 @@ export const resolvers = {
           .select("*")
           .eq("id", context.supabaseUser!.id)
       ).data?.[0];
-      return p.data as Profile;
+
+      return {
+        profile: p.data as Profile,
+        accessToken: user.data?.session?.access_token,
+        refreshToken: user.data?.session?.refresh_token,
+      } as SignUpResponse;
     },
   },
 } as Partial<Resolvers>;
