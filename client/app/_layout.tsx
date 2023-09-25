@@ -20,6 +20,9 @@ export const Supabase = createClient(
   'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InhwdnZncnhnbWx5bm1ydWl5anpmIiwicm9sZSI6ImFub24iLCJpYXQiOjE2OTI5OTQ4NTAsImV4cCI6MjAwODU3MDg1MH0.EzpkASo9buJPphbt01uSguJ9ZYHpoiSbo1f3XMzsqNM',
 );
 
+export const apolloClient = new ApolloClient({
+  uri: 'https://xpvvgrxgmlynmruiyjzf.supabase.co/functions/v1/graphql',
+  cache: new InMemoryCache(),
 });
 
 export default function RootLayout() {
