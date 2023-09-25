@@ -20,7 +20,6 @@
   "settings": {
     "files.exclude": {
       "node_modules/": true,
-      "app/": true,
       "server/": true
     },
     "deno.importMap": "./server/supabase/functions/import_map.json"

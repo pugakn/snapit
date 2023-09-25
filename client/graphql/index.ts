@@ -1,4 +1,7 @@
 import { GraphQLResolveInfo, GraphQLScalarType, GraphQLScalarTypeConfig } from 'graphql';
+import { gql } from '@apollo/client';
+import * as Apollo from '@apollo/client';
+import { FieldPolicy, FieldReadFunction, TypePolicies, TypePolicy } from '@apollo/client/cache';
 export type Maybe<T> = T | null;
 export type InputMaybe<T> = Maybe<T>;
 export type Exact<T extends { [key: string]: unknown }> = { [K in keyof T]: T[K] };
@@ -7,6 +10,7 @@ export type MakeMaybe<T, K extends keyof T> = Omit<T, K> & { [SubKey in K]: Mayb
 export type MakeEmpty<T extends { [key: string]: unknown }, K extends keyof T> = { [_ in K]?: never };
 export type Incremental<T> = T | { [P in keyof T]?: P extends ' $fragmentName' | '__typename' ? T[P] : never };
 export type RequireFields<T, K extends keyof T> = Omit<T, K> & { [P in K]-?: NonNullable<T[P]> };
+const defaultOptions = {} as const;
 /** All built-in and custom scalars, mapped to their actual values */
 export type Scalars = {
   ID: { input: string; output: string; }
@@ -102,6 +106,62 @@ export type S3Object = {
   region?: Maybe<Scalars['String']['output']>;
 };
 
+export type SignupMutationVariables = Exact<{
+  email: Scalars['String']['input'];
+  password: Scalars['String']['input'];
+  name: Scalars['String']['input'];
+  username: Scalars['String']['input'];
+  avatar: Scalars['Upload']['input'];
+}>;
+
+
+export type SignupMutation = { __typename?: 'Mutation', signup?: { __typename: 'Profile', id: any } | null };
+
+
+export const SignupDocument = gql`
+    mutation signup($email: String!, $password: String!, $name: String!, $username: String!, $avatar: Upload!) {
+  signup(
+    email: $email
+    password: $password
+    name: $name
+    username: $username
+    avatar: $avatar
+  ) {
+    id
+    __typename
+  }
+}
+    `;
+export type SignupMutationFn = Apollo.MutationFunction<SignupMutation, SignupMutationVariables>;
+
+/**
+ * __useSignupMutation__
+ *
+ * To run a mutation, you first call `useSignupMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useSignupMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [signupMutation, { data, loading, error }] = useSignupMutation({
+ *   variables: {
+ *      email: // value for 'email'
+ *      password: // value for 'password'
+ *      name: // value for 'name'
+ *      username: // value for 'username'
+ *      avatar: // value for 'avatar'
+ *   },
+ * });
+ */
+export function useSignupMutation(baseOptions?: Apollo.MutationHookOptions<SignupMutation, SignupMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<SignupMutation, SignupMutationVariables>(SignupDocument, options);
+      }
+export type SignupMutationHookResult = ReturnType<typeof useSignupMutation>;
+export type SignupMutationResult = Apollo.MutationResult<SignupMutation>;
+export type SignupMutationOptions = Apollo.BaseMutationOptions<SignupMutation, SignupMutationVariables>;
 
 
 export type ResolverTypeWrapper<T> = Promise<T> | T;
@@ -263,3 +323,65 @@ export type Resolvers<ContextType = any> = {
   Upload?: GraphQLScalarType;
 };
 
+
+export type MutationKeySpecifier = ('deleteImage' | 'postImage' | 'signup' | MutationKeySpecifier)[];
+export type MutationFieldPolicy = {
+	deleteImage?: FieldPolicy<any> | FieldReadFunction<any>,
+	postImage?: FieldPolicy<any> | FieldReadFunction<any>,
+	signup?: FieldPolicy<any> | FieldReadFunction<any>
+};
+export type PostKeySpecifier = ('created_at' | 'description' | 'id' | 'kind' | 's3_object' | 'updated_at' | 'user_id' | PostKeySpecifier)[];
+export type PostFieldPolicy = {
+	created_at?: FieldPolicy<any> | FieldReadFunction<any>,
+	description?: FieldPolicy<any> | FieldReadFunction<any>,
+	id?: FieldPolicy<any> | FieldReadFunction<any>,
+	kind?: FieldPolicy<any> | FieldReadFunction<any>,
+	s3_object?: FieldPolicy<any> | FieldReadFunction<any>,
+	updated_at?: FieldPolicy<any> | FieldReadFunction<any>,
+	user_id?: FieldPolicy<any> | FieldReadFunction<any>
+};
+export type ProfileKeySpecifier = ('created_at' | 'id' | 'name' | 's3_avatar' | 'updated_at' | 'username' | ProfileKeySpecifier)[];
+export type ProfileFieldPolicy = {
+	created_at?: FieldPolicy<any> | FieldReadFunction<any>,
+	id?: FieldPolicy<any> | FieldReadFunction<any>,
+	name?: FieldPolicy<any> | FieldReadFunction<any>,
+	s3_avatar?: FieldPolicy<any> | FieldReadFunction<any>,
+	updated_at?: FieldPolicy<any> | FieldReadFunction<any>,
+	username?: FieldPolicy<any> | FieldReadFunction<any>
+};
+export type QueryKeySpecifier = ('followers' | 'following' | 'profile' | 'userFeed' | QueryKeySpecifier)[];
+export type QueryFieldPolicy = {
+	followers?: FieldPolicy<any> | FieldReadFunction<any>,
+	following?: FieldPolicy<any> | FieldReadFunction<any>,
+	profile?: FieldPolicy<any> | FieldReadFunction<any>,
+	userFeed?: FieldPolicy<any> | FieldReadFunction<any>
+};
+export type S3ObjectKeySpecifier = ('bucket' | 'key' | 'region' | S3ObjectKeySpecifier)[];
+export type S3ObjectFieldPolicy = {
+	bucket?: FieldPolicy<any> | FieldReadFunction<any>,
+	key?: FieldPolicy<any> | FieldReadFunction<any>,
+	region?: FieldPolicy<any> | FieldReadFunction<any>
+};
+export type StrictTypedTypePolicies = {
+	Mutation?: Omit<TypePolicy, "fields" | "keyFields"> & {
+		keyFields?: false | MutationKeySpecifier | (() => undefined | MutationKeySpecifier),
+		fields?: MutationFieldPolicy,
+	},
+	Post?: Omit<TypePolicy, "fields" | "keyFields"> & {
+		keyFields?: false | PostKeySpecifier | (() => undefined | PostKeySpecifier),
+		fields?: PostFieldPolicy,
+	},
+	Profile?: Omit<TypePolicy, "fields" | "keyFields"> & {
+		keyFields?: false | ProfileKeySpecifier | (() => undefined | ProfileKeySpecifier),
+		fields?: ProfileFieldPolicy,
+	},
+	Query?: Omit<TypePolicy, "fields" | "keyFields"> & {
+		keyFields?: false | QueryKeySpecifier | (() => undefined | QueryKeySpecifier),
+		fields?: QueryFieldPolicy,
+	},
+	S3Object?: Omit<TypePolicy, "fields" | "keyFields"> & {
+		keyFields?: false | S3ObjectKeySpecifier | (() => undefined | S3ObjectKeySpecifier),
+		fields?: S3ObjectFieldPolicy,
+	}
+};
+export type TypedTypePolicies = StrictTypedTypePolicies & TypePolicies;

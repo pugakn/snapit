@@ -2,10 +2,13 @@ import { Link } from 'expo-router';
 import { View } from 'react-native-animatable';
 import { Button, Text, TextInput, useTheme } from 'react-native-paper';
 
+import { useSignupMutation } from '../graphql';
 import { globalStyles } from '../styles/global';
 
 export default function SignUpPage() {
   const { colors } = useTheme();
+  const [signup, signupData] = useSignupMutation();
+
   return (
     <View style={[globalStyles.mainContainer, { width: '100%', flex: 1 }]}>
       <View

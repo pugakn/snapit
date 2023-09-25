@@ -1,20 +1,29 @@
-
-import type { CodegenConfig } from '@graphql-codegen/cli';
+import type { CodegenConfig } from "@graphql-codegen/cli";
 
 //@ts-ignore
-require('dotenv').config({ path: '.env.local' })
+require("dotenv").config({ path: ".env.local" });
 
 const config: CodegenConfig = {
   overwrite: true,
   schema: ["../server/gql/schemas/*.ts"],
+  documents: ["../client/graphql/**/*.gql"],
   generates: {
     "./generated/gql/types.ts": {
-      plugins: ["typescript", "typescript-resolvers"]
+      plugins: ["typescript", "typescript-resolvers"],
+    },
+    "../client/graphql/index.ts": {
+      plugins: [
+        "typescript",
+        "typescript-operations",
+        "typescript-react-apollo",
+        "typescript-resolvers",
+        "typescript-apollo-client-helpers",
+      ],
     },
     "./generated/gql/graphql.schema.json": {
-      plugins: ["introspection"]
-    }
-  }
+      plugins: ["introspection"],
+    },
+  },
 };
 
 export default config;
