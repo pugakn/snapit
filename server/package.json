@@ -1,0 +1,8 @@
+{
+  "scripts": {
+    "gen-types": "supabase gen types typescript --linked > ./types/schema.ts"
+  },
+  "devDependencies": {
+    "supabase": "^1.93.0"
+  }
+}

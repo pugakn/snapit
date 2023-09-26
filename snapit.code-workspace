@@ -1,0 +1,27 @@
+{
+  "folders": [
+    {
+      "name": "project-root",
+      "path": "./"
+    },
+    {
+      "name": "client",
+      "path": "client"
+    },
+    {
+      "name": "server",
+      "path": "server"
+    },
+    {
+      "name": "shared",
+      "path": "shared"
+    }
+  ],
+  "settings": {
+    "files.exclude": {
+      "node_modules/": true,
+      "server/": true
+    },
+    "deno.importMap": "./server/supabase/functions/import_map.json"
+  }
+}
