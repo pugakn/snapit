@@ -4,7 +4,7 @@ import { Link } from 'expo-router';
 import Joi from 'joi';
 import { useForm } from 'react-hook-form';
 import { View } from 'react-native-animatable';
-import { Button, Text, useTheme } from 'react-native-paper';
+import { Avatar, Button, Text, useTheme } from 'react-native-paper';
 
 import { FormInput } from '../components/formInput';
 import { useSignupMutation } from '../graphql';
@@ -33,12 +33,7 @@ export default function SignUpPage() {
   const { colors } = useTheme();
   const [signup, signupData] = useSignupMutation({ fetchPolicy: 'no-cache' });
 
-  const {
-    control,
-    handleSubmit,
-    setValue,
-    formState: { isValid, errors },
-  } = useForm({
+  const { control, handleSubmit, setValue, formState, getValues } = useForm({
     mode: 'onChange',
     defaultValues: {
       name: '',
@@ -52,6 +47,7 @@ export default function SignUpPage() {
 
   const pickImage = async () => {
     const result = await ImagePicker.launchImageLibraryAsync({
+      base64: true,
       mediaTypes: ImagePicker.MediaTypeOptions.All,
       allowsEditing: true,
       aspect: [4, 4],
@@ -59,14 +55,13 @@ export default function SignUpPage() {
     });
 
     console.log(result);
-
     if (!result.canceled) {
-      setValue('avatar', result.assets[0].uri);
+      setValue('avatar', result.assets[0].base64!);
     }
   };
 
   const handleSignUp = handleSubmit(async ({ name, username, password, avatar, email }) => {
-    if (isValid) {
+    if (formState.isValid) {
       await signup({
         variables: {
           name,
@@ -79,7 +74,6 @@ export default function SignUpPage() {
     }
   });
 
-  console.log({ isValid, errors });
   console.log({ signupData });
 
   return (
@@ -93,24 +87,41 @@ export default function SignUpPage() {
             justifyContent: 'flex-end',
           },
         ]}>
-        <FormInput control={control} name="name" placeholder="Name" errors={errors} />
-        <FormInput control={control} name="username" placeholder="Username" errors={errors} />
-        <FormInput control={control} name="email" placeholder="Email" errors={errors} />
-        <FormInput control={control} name="password" placeholder="Password" errors={errors} />
-
         <Button
           mode="contained"
           style={{ width: '100%' }}
           onPress={pickImage}
           disabled={signupData.loading}>
-          Pick Avatar
+          {getValues('avatar') ? (
+            <Avatar.Image
+              size={24}
+              source={{ uri: `data:image/jpeg;base64,${getValues('avatar')}` }}
+            />
+          ) : (
+            'Pick Avatar'
+          )}
         </Button>
+        <FormInput control={control} name="name" placeholder="Name" errors={formState.errors} />
+        <FormInput
+          control={control}
+          name="username"
+          placeholder="Username"
+          errors={formState.errors}
+        />
+        <FormInput control={control} name="email" placeholder="Email" errors={formState.errors} />
+        <FormInput
+          control={control}
+          name="password"
+          placeholder="Password"
+          errors={formState.errors}
+        />
+
         <Button
           mode="contained"
           style={{ width: '100%' }}
           loading={signupData.loading}
           onPress={handleSignUp}
-          disabled={!isValid || signupData.loading}>
+          disabled={!formState.isValid || signupData.loading}>
           Sign up
         </Button>
       </View>

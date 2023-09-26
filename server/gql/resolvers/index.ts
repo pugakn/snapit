@@ -36,20 +36,27 @@ export const resolvers = {
       context.supabaseUser = user.data.user;
 
       if (user.error) {
-        throw new YogaErr(user.error.message, user.error);
+        return Promise.reject(new YogaErr(user.error.message, user.error));
       }
 
-      await context.supabaseClientAdmin.from("profiles").insert({
-        id: context.supabaseUser!.id,
-        username: username,
-        name: name,
-        s3_avatar: avatarKey
-          ? {
-              bucket: "avatars",
-              key: avatarKey,
-            }
-          : undefined,
-      });
+      try {
+        await context.supabaseClientAdmin.from("profiles").insert({
+          id: context.supabaseUser!.id,
+          username: username,
+          name: name,
+          s3_avatar: avatarKey
+            ? {
+                bucket: "avatars",
+                key: avatarKey,
+              }
+            : undefined,
+        });
+      } catch (e) {
+        await context.supabaseClientAdmin.auth.admin.deleteUser(
+          context.supabaseUser!.id
+        );
+        return Promise.reject(new YogaErr(e.message, e));
+      }
 
       const p = (
         await context.supabaseClientAdmin
@@ -59,7 +66,7 @@ export const resolvers = {
       ).data?.[0];
 
       return {
-        profile: p.data as Profile,
+        profile: p as Profile,
         accessToken: user.data?.session?.access_token,
         refreshToken: user.data?.session?.refresh_token,
       } as SignUpResponse;
