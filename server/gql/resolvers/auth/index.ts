@@ -1,5 +1,6 @@
 import { shield } from "graphql-shield";
-import { isAllowed, isDenied } from "./rules.ts";
+import { isAllowed, isDenied, validateQuery } from "./rules.ts";
+import { ProfileSchema } from "./inputs.ts";
 
 export default shield(
   {
@@ -8,7 +9,7 @@ export default shield(
     },
 
     Mutation: {
-      signup: isAllowed,
+      signup: validateQuery(ProfileSchema),
       "*": isDenied,
     },
   },

@@ -16,8 +16,12 @@ import { Context } from "./types.ts";
 
 const armor = new EnvelopArmor();
 const enhancements = armor.protect();
-const databaseUrl = Deno.env.get("SUPABASE_DB_URL")!;
-const pool = new postgres.Pool(databaseUrl, 3, true);
+// const databaseUrl = Deno.env.get("SUPABASE_DB_URL")!;
+const supabaseUr = Deno.env.get("SUPABASE_URL") ?? "";
+const supabaseAnonKey = Deno.env.get("SUPABASE_ANON_KEY") ?? "";
+const supabaseServiceKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? "";
+
+// const pool = new postgres.Pool(databaseUrl, 3, true);
 
 const schema = createSchema({
   typeDefs: [typeDefs, ...scalarTypeDefs],
@@ -30,17 +34,32 @@ const yogaServer = createYoga({
   schema: applyMiddleware(schema, auth.generate(schema)),
   plugins: [...enhancements.plugins],
   async context(req: Request) {
-    const supabaseClient = createClient(
-      // Supabase API URL - env var exported by default.
-      Deno.env.get("SUPABASE_URL") ?? "",
-      // Supabase API ANON KEY - env var exported by default.
-      Deno.env.get("SUPABASE_ANON_KEY") ?? "",
-      // Create client with Auth context of the user that called the function.
-      // This way your row-level-security (RLS) policies are applied.
+    const supabaseClientAdmin = createClient(
+      supabaseUr,
+      supabaseServiceKey,
       {
         global: {
-          headers: { Authorization: req.headers.get("Authorization")! },
+          headers: { Authorization: `Bearer ${supabaseServiceKey}` },
         },
+        auth: {
+          persistSession: false,
+        }
+      }
+    );
+    const supabaseClient = createClient(
+      // Supabase API URL - env var exported by default.
+      supabaseUr,
+      // Supabase API ANON KEY - env var exported by default.
+      // Create client with Auth context of the user that called the function.
+      // This way your row-level-security (RLS) policies are applied.
+      supabaseAnonKey,
+      {
+        global: {
+          headers: { Authorization: req.headers?.get("Authorization")! },
+        },
+        auth: {
+          persistSession: false,
+        }
       }
     );
 
@@ -49,13 +68,13 @@ const yogaServer = createYoga({
       data: { user },
     } = await supabaseClient.auth.getUser();
 
-    const supabaseDb = await pool.connect();
+    // const supabaseDb = await pool.connect();
 
     return {
       req,
       supabaseClient,
+      supabaseClientAdmin,
       supabaseUser: user,
-      supabaseDb,
     } as Context;
   },
 });

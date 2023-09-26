@@ -48,7 +48,7 @@ export default gql`
   }
 
   type Mutation {
-    signup(username: String!, name: String!, email: String!, password: String!, avatar: Upload! ): SignUpResponse
+    signup(username: String!, name: String!, email: String!, password: String!, avatar: Upload ): SignUpResponse
     postImage(asset: Upload!, description: String): Post
     deleteImage(id: UUID!): Boolean
   }

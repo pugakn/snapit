@@ -49,13 +49,9 @@ export class Info {
   }
 }
 
-export class ApolloErr extends GraphQLError {
+export class YogaErr extends GraphQLError {
   constructor(category: string, ...args: any) {
     super(category)
-    this.message = category
-    this.extensions.code = category
-    this.extensions.logs = args
-    Object.defineProperty(this, 'name', { value: category })
     console.info(chalk.yellow(`🍋 ${this.stack}`), ...getLogsAsInspects(args))
   }
 }

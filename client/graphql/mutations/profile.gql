@@ -3,7 +3,7 @@ mutation signup(
   $password: String!
   $name: String!
   $username: String!
-  $avatar: Upload!
+  $avatar: Upload
 ) {
   signup(email: $email, password: $password, name: $name, username: $username, avatar: $avatar) {
     accessToken

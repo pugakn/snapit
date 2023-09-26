@@ -3,6 +3,7 @@ import {
   Resolvers,
   SignUpResponse,
 } from "../../../shared/generated/gql/types.ts";
+import { YogaErr, Info } from "../../utils/server.ts";
 import { generateFileId } from "../../utils/storage.ts";
 import { Context } from "../types.ts";
 import { Image } from "https://deno.land/x/imagescript@1.2.15/mod.ts";
@@ -15,34 +16,43 @@ export const resolvers = {
       { email, password, name, username, avatar },
       context: Context
     ) => {
-      const image = await Image.decode(avatar);
-      const encoded = await image.resize(400, 400).encodeJPEG(80);
+      new Info("Resolver:signup", { email, name, username });
 
-      const avatarKey = generateFileId(username, "jpg");
-      await context.supabaseClient.storage
-        .from("avatars")
-        .upload(avatarKey, encoded);
+      let avatarKey: string | undefined = undefined;
+      if (avatar) {
+        const image = await Image.decode(avatar);
+        const encoded = await image.resize(400, 400).encodeJPEG(80);
 
-      const user = await context.supabaseClient.auth.signUp({
+        avatarKey = generateFileId(username, "jpg");
+        await context.supabaseClientAdmin.storage
+          .from("avatars")
+          .upload(avatarKey, encoded);
+      }
+
+      const user = await context.supabaseClientAdmin.auth.signUp({
         email: email,
         password: password,
       });
       context.supabaseUser = user.data.user;
 
-      await context.supabaseClient.from("profiles").insert([
-        {
-          id: context.supabaseUser!.id,
-          username: username,
-          name: name,
-          s3_avatar: {
-            bucket: "avatars",
-            key: avatarKey,
-          },
-        },
-      ]);
+      if (user.error) {
+        throw new YogaErr(user.error.message, user.error);
+      }
+
+      await context.supabaseClientAdmin.from("profiles").insert({
+        id: context.supabaseUser!.id,
+        username: username,
+        name: name,
+        s3_avatar: avatarKey
+          ? {
+              bucket: "avatars",
+              key: avatarKey,
+            }
+          : undefined,
+      });
 
       const p = (
-        await context.supabaseClient
+        await context.supabaseClientAdmin
           .from("profiles")
           .select("*")
           .eq("id", context.supabaseUser!.id)

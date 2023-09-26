@@ -2,60 +2,32 @@ import { joiResolver } from '@hookform/resolvers/joi';
 import * as ImagePicker from 'expo-image-picker';
 import { Link } from 'expo-router';
 import Joi from 'joi';
-import { Controller, useForm } from 'react-hook-form';
+import { useForm } from 'react-hook-form';
 import { View } from 'react-native-animatable';
-import { Button, HelperText, Text, TextInput, useTheme } from 'react-native-paper';
+import { Button, Text, useTheme } from 'react-native-paper';
 
+import { FormInput } from '../components/formInput';
 import { useSignupMutation } from '../graphql';
 import { globalStyles } from '../styles/global';
 
 const schema = Joi.object({
   name: Joi.string().min(1).required(),
   username: Joi.string().min(1).required(),
-  password: Joi.string().min(6).required(),
-  avatar: Joi.string().max(10485760),
+  password: Joi.string().min(6).required().messages({
+    'string.min': 'Password should be at least 6 characters',
+  }),
+  avatar: Joi.string().max(10485760).optional().messages({
+    'string.max': 'Image size should be less than or equal to 10MB',
+    'any.required': 'Please upload an image',
+  }),
   email: Joi.string()
     .email({ tlds: { allow: false } })
     .required(),
+}).messages({
+  'string.empty': 'This field is required',
+  'string.min': 'This field is required',
+  'string.email': 'Please enter a valid email',
 });
-
-export const FormInput = ({
-  control,
-  name,
-  placeholder,
-  errors,
-  ...rest
-}: {
-  control: any;
-  name: string;
-  placeholder: string;
-  errors: any;
-}) => {
-  return (
-    <>
-      <Controller
-        control={control}
-        render={({ field: { onChange, onBlur, value } }) => (
-          <TextInput
-            mode="outlined"
-            style={{ width: '100%' }}
-            placeholder={placeholder}
-            onBlur={onBlur}
-            onChangeText={onChange}
-            value={value}
-            {...rest}
-          />
-        )}
-        name={name}
-      />
-      {errors[name] && (
-        <HelperText type="error" padding="none">
-          {errors[name]?.message}
-        </HelperText>
-      )}
-    </>
-  );
-};
 
 export default function SignUpPage() {
   const { colors } = useTheme();
@@ -72,7 +44,7 @@ export default function SignUpPage() {
       name: '',
       username: '',
       password: '',
-      avatar: '',
+      avatar: undefined as string | undefined,
       email: '',
     },
     resolver: joiResolver(schema),
@@ -82,8 +54,8 @@ export default function SignUpPage() {
     const result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.All,
       allowsEditing: true,
-      aspect: [4, 3],
-      quality: 1,
+      aspect: [4, 4],
+      quality: 0.8,
     });
 
     console.log(result);
@@ -107,6 +79,9 @@ export default function SignUpPage() {
     }
   });
 
+  console.log({ isValid, errors });
+  console.log({ signupData });
+
   return (
     <View style={[globalStyles.mainContainer, { width: '100%', flex: 1 }]}>
       <View
@@ -114,7 +89,7 @@ export default function SignUpPage() {
           globalStyles.verticalContainer,
           {
             width: '100%',
-            flex: 3,
+            flex: 5,
             justifyContent: 'flex-end',
           },
         ]}>
@@ -150,7 +125,7 @@ export default function SignUpPage() {
         ]}>
         <Text>
           Already have an account?{'  '}
-          <Link href="sign-in" style={{ color: colors.primary }}>
+          <Link href="/sign-in" style={{ color: colors.primary }}>
             Sign in
           </Link>
         </Text>

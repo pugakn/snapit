@@ -1,5 +1,5 @@
 import { cloneDeep } from "lodash";
-import { ApolloErr } from "../../../utils/server.ts";
+import { YogaErr } from "../../../utils/server.ts";
 import permitAndValidate from "../../../utils/permitAndValidate.ts";
 import { rule } from "graphql-shield";
 
@@ -12,13 +12,13 @@ export const validateQuery = (argsJsonSchema: any) =>
       Object.keys(args).forEach((key) => delete args[key]);
       Object.assign(args, newArgs);
     } catch (e: any) {
-      return new ApolloErr(e.name, ...(e.logs || []));
+      return Promise.reject(new YogaErr(e.name, ...(e.logs || [])));
     }
     return true;
   });
 
 export const isDenied = rule()(() => {
-  return new ApolloErr("DENIED");
+  return Promise.reject(new YogaErr("DENIED"));
 });
 
 export const isAllowed = rule()(() => {

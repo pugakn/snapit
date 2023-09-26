@@ -43,7 +43,7 @@ export type MutationPostImageArgs = {
 
 
 export type MutationSignupArgs = {
-  avatar: Scalars['Upload']['input'];
+  avatar?: InputMaybe<Scalars['Upload']['input']>;
   email: Scalars['String']['input'];
   name: Scalars['String']['input'];
   password: Scalars['String']['input'];
@@ -118,7 +118,7 @@ export type SignupMutationVariables = Exact<{
   password: Scalars['String']['input'];
   name: Scalars['String']['input'];
   username: Scalars['String']['input'];
-  avatar: Scalars['Upload']['input'];
+  avatar?: InputMaybe<Scalars['Upload']['input']>;
 }>;
 
 
@@ -126,7 +126,7 @@ export type SignupMutation = { __typename?: 'Mutation', signup?: { __typename: '
 
 
 export const SignupDocument = gql`
-    mutation signup($email: String!, $password: String!, $name: String!, $username: String!, $avatar: Upload!) {
+    mutation signup($email: String!, $password: String!, $name: String!, $username: String!, $avatar: Upload) {
   signup(
     email: $email
     password: $password
@@ -282,7 +282,7 @@ export interface DateTimeScalarConfig extends GraphQLScalarTypeConfig<ResolversT
 export type MutationResolvers<ContextType = any, ParentType extends ResolversParentTypes['Mutation'] = ResolversParentTypes['Mutation']> = {
   deleteImage?: Resolver<Maybe<ResolversTypes['Boolean']>, ParentType, ContextType, RequireFields<MutationDeleteImageArgs, 'id'>>;
   postImage?: Resolver<Maybe<ResolversTypes['Post']>, ParentType, ContextType, RequireFields<MutationPostImageArgs, 'asset'>>;
-  signup?: Resolver<Maybe<ResolversTypes['SignUpResponse']>, ParentType, ContextType, RequireFields<MutationSignupArgs, 'avatar' | 'email' | 'name' | 'password' | 'username'>>;
+  signup?: Resolver<Maybe<ResolversTypes['SignUpResponse']>, ParentType, ContextType, RequireFields<MutationSignupArgs, 'email' | 'name' | 'password' | 'username'>>;
 };
 
 export type PostResolvers<ContextType = any, ParentType extends ResolversParentTypes['Post'] = ResolversParentTypes['Post']> = {
