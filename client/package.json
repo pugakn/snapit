@@ -13,6 +13,7 @@
     "@apollo/client": "^3.8.4",
     "@expo/vector-icons": "^13.0.0",
     "@hookform/resolvers": "^3.3.1",
+    "@react-native-async-storage/async-storage": "1.18.2",
     "@supabase/supabase-js": "^2.33.1",
     "expo": "~49.0.8",
     "expo-camera": "~13.4.2",
@@ -36,8 +37,7 @@
     "react-native-screens": "~3.22.0",
     "react-native-url-polyfill": "^2.0.0",
     "react-native-web": "~0.19.6",
-    "text-encoding": "^0.7.0",
-    "@react-native-async-storage/async-storage": "1.18.2"
+    "text-encoding": "^0.7.0"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0",

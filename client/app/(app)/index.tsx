@@ -1,7 +1,5 @@
-import { Text } from 'react-native';
+import { Redirect } from 'expo-router';
 
 export default function LoadingPage() {
-  // return <Redirect href="/sign-up" />;
-
-  return <Text>Loading...</Text>;
+  return <Redirect href="/(feed)/feed" />;
 }

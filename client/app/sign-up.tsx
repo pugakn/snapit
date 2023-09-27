@@ -1,13 +1,13 @@
 import { joiResolver } from '@hookform/resolvers/joi';
 import * as ImagePicker from 'expo-image-picker';
-import { Link } from 'expo-router';
+import { Link, router } from 'expo-router';
 import Joi from 'joi';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { TouchableOpacity } from 'react-native';
 import { View } from 'react-native-animatable';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
-import { Avatar, Button, IconButton, Text, useTheme } from 'react-native-paper';
+import { Avatar, Button, HelperText, IconButton, Text, useTheme } from 'react-native-paper';
 
 import { FormInput } from '../components/formInput';
 import { useSignupMutation } from '../graphql';
@@ -35,7 +35,11 @@ const schema = Joi.object({
 
 export default function SignUpPage() {
   const { colors } = useTheme();
-  const [signup, signupData] = useSignupMutation({ fetchPolicy: 'no-cache' });
+  const [signup, signupData] = useSignupMutation({
+    fetchPolicy: 'network-only',
+    notifyOnNetworkStatusChange: true,
+    errorPolicy: 'all',
+  });
   const [image, setImage] = useState<string | undefined>(undefined);
 
   const { control, handleSubmit, setValue, formState } = useForm({
@@ -83,6 +87,7 @@ export default function SignUpPage() {
           access_token: res.data.signup.accessToken,
           refresh_token: res.data.signup.refreshToken,
         });
+        router.replace('/');
       }
     }
   });
@@ -128,20 +133,10 @@ export default function SignUpPage() {
             />
           </View>
         </TouchableOpacity>
-        <FormInput control={control} name="name" placeholder="Name" errors={formState.errors} />
-        <FormInput
-          control={control}
-          name="username"
-          placeholder="Username"
-          errors={formState.errors}
-        />
-        <FormInput control={control} name="email" placeholder="Email" errors={formState.errors} />
-        <FormInput
-          control={control}
-          name="password"
-          placeholder="Password"
-          errors={formState.errors}
-        />
+        <FormInput control={control} name="name" placeholder="Name" formState={formState} />
+        <FormInput control={control} name="username" placeholder="Username" formState={formState} />
+        <FormInput control={control} name="email" placeholder="Email" formState={formState} />
+        <FormInput control={control} name="password" placeholder="Password" formState={formState} />
 
         <Button
           mode="contained"
@@ -151,6 +146,9 @@ export default function SignUpPage() {
           disabled={!formState.isValid || signupData.loading}>
           Sign up
         </Button>
+        <HelperText type="error" padding="none">
+          {signupData.error?.message}
+        </HelperText>
       </View>
       <View
         style={[

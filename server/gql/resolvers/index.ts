@@ -1,12 +1,15 @@
+import { createClient } from "https://esm.sh/@supabase/supabase-js@2.33.2";
 import {
   Profile,
   Resolvers,
   SignUpResponse,
 } from "../../../shared/generated/gql/types.ts";
+import { ERROR_MAP } from "../../constants/index.ts";
 import { YogaErr, Info } from "../../utils/server.ts";
 import { generateFileId } from "../../utils/storage.ts";
 import { Context } from "../types.ts";
 import { Image } from "https://deno.land/x/imagescript@1.2.15/mod.ts";
+import * as base64 from "https://denopkg.com/chiefbiiko/base64@master/mod.ts";
 
 export const resolvers = {
   Query: {},
@@ -18,17 +21,6 @@ export const resolvers = {
     ) => {
       new Info("Resolver:signup", { email, name, username });
 
-      let avatarKey: string | undefined = undefined;
-      if (avatar) {
-        const image = await Image.decode(avatar);
-        const encoded = await image.resize(400, 400).encodeJPEG(80);
-
-        avatarKey = generateFileId(username, "jpg");
-        await context.supabaseClientAdmin.storage
-          .from("avatars")
-          .upload(avatarKey, encoded);
-      }
-
       const user = await context.supabaseClientAdmin.auth.signUp({
         email: email,
         password: password,
@@ -39,23 +31,63 @@ export const resolvers = {
         return Promise.reject(new YogaErr(user.error.message, user.error));
       }
 
-      try {
-        await context.supabaseClientAdmin.from("profiles").insert({
-          id: context.supabaseUser!.id,
-          username: username,
-          name: name,
-          s3_avatar: avatarKey
-            ? {
-                bucket: "avatars",
-                key: avatarKey,
-              }
-            : undefined,
+      let avatarKey: string | undefined = undefined;
+      if (avatar) {
+        const avatarUin8Array = base64.toUint8Array(avatar);
+        const image = await Image.decode(avatarUin8Array);
+        const encoded = await image.resize(400, 400).encodeJPEG(80);
+
+        avatarKey =
+          context.supabaseUser!.id +
+          "/" +
+          generateFileId(context.supabaseUser!.id, "jpeg");
+
+        // Create a new client with a user's auth context.
+        const supabaseUr = Deno.env.get("SUPABASE_URL") ?? "";
+        const supabaseAnonKey = Deno.env.get("SUPABASE_ANON_KEY") ?? "";
+        const supabaseClient = createClient(supabaseUr, supabaseAnonKey, {
+          global: {
+            headers: {
+              Authorization: `Bearer ${user.data?.session?.access_token!}`,
+            },
+          },
+          auth: {
+            persistSession: false,
+          },
         });
-      } catch (e) {
+
+        const res = await supabaseClient.storage
+          .from("avatars")
+          .upload(avatarKey, encoded, {
+            contentType: "image/jpeg",
+          });
+
+        if (res.error) {
+          await context.supabaseClientAdmin.auth.admin.deleteUser(
+            context.supabaseUser!.id
+          );
+          return Promise.reject(new YogaErr(res.error.message, res.error));
+        }
+      }
+
+      const res = await context.supabaseClientAdmin.from("profiles").insert({
+        id: context.supabaseUser!.id,
+        username: username,
+        name: name,
+        s3_avatar: avatarKey
+          ? {
+              bucket: "avatars",
+              key: avatarKey,
+            }
+          : undefined,
+      });
+
+      if (res.error) {
         await context.supabaseClientAdmin.auth.admin.deleteUser(
           context.supabaseUser!.id
         );
-        return Promise.reject(new YogaErr(e.message, e));
+        const message = ERROR_MAP[res.error.message] || res.error.message;
+        return Promise.reject(new YogaErr(message, res.error));
       }
 
       const p = (
