@@ -6,6 +6,7 @@ import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { TouchableOpacity } from 'react-native';
 import { View } from 'react-native-animatable';
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import { Avatar, Button, IconButton, Text, useTheme } from 'react-native-paper';
 
 import { FormInput } from '../components/formInput';
@@ -81,14 +82,13 @@ export default function SignUpPage() {
   console.log({ signupData });
 
   return (
-    <View style={[globalStyles.mainContainer, { width: '100%', flex: 1 }]}>
+    <KeyboardAwareScrollView contentContainerStyle={[globalStyles.mainContainer, { flexGrow: 1 }]}>
       <View
         style={[
           globalStyles.verticalContainer,
           {
             width: '100%',
             flex: 5,
-            justifyContent: 'flex-end',
           },
         ]}>
         <TouchableOpacity
@@ -160,6 +160,6 @@ export default function SignUpPage() {
           </Link>
         </Text>
       </View>
-    </View>
+    </KeyboardAwareScrollView>
   );
 }
