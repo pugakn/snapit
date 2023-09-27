@@ -21,3 +21,7 @@ export const ERROR_MESSAGES = {
     NOT_FOUND: 'Not found',
     INTERNAL_SERVER_ERROR: 'Internal server error',
 }
+
+export const ERROR_MAP = {
+    'duplicate key value violates unique constraint "profiles_username_key"': 'Username already exists',
+} as any

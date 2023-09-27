@@ -1,14 +1,18 @@
 import { joiResolver } from '@hookform/resolvers/joi';
 import * as ImagePicker from 'expo-image-picker';
-import { Link } from 'expo-router';
+import { Link, router } from 'expo-router';
 import Joi from 'joi';
+import { useState } from 'react';
 import { useForm } from 'react-hook-form';
+import { TouchableOpacity } from 'react-native';
 import { View } from 'react-native-animatable';
-import { Avatar, Button, Text, useTheme } from 'react-native-paper';
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
+import { Avatar, Button, HelperText, IconButton, Text, useTheme } from 'react-native-paper';
 
 import { FormInput } from '../components/formInput';
 import { useSignupMutation } from '../graphql';
 import { globalStyles } from '../styles/global';
+import { Supabase } from './_layout';
 
 const schema = Joi.object({
   name: Joi.string().min(1).required(),
@@ -31,9 +35,14 @@ const schema = Joi.object({
 
 export default function SignUpPage() {
   const { colors } = useTheme();
-  const [signup, signupData] = useSignupMutation({ fetchPolicy: 'no-cache' });
+  const [signup, signupData] = useSignupMutation({
+    fetchPolicy: 'network-only',
+    notifyOnNetworkStatusChange: true,
+    errorPolicy: 'all',
+  });
+  const [image, setImage] = useState<string | undefined>(undefined);
 
-  const { control, handleSubmit, setValue, formState, getValues } = useForm({
+  const { control, handleSubmit, setValue, formState } = useForm({
     mode: 'onChange',
     defaultValues: {
       name: '',
@@ -57,12 +66,13 @@ export default function SignUpPage() {
     console.log(result);
     if (!result.canceled) {
       setValue('avatar', result.assets[0].base64!);
+      setImage(result.assets[0].uri);
     }
   };
 
   const handleSignUp = handleSubmit(async ({ name, username, password, avatar, email }) => {
     if (formState.isValid) {
-      await signup({
+      const res = await signup({
         variables: {
           name,
           username,
@@ -71,50 +81,62 @@ export default function SignUpPage() {
           email,
         },
       });
+
+      if (res.data?.signup?.accessToken && res.data?.signup?.refreshToken) {
+        await Supabase.auth.setSession({
+          access_token: res.data.signup.accessToken,
+          refresh_token: res.data.signup.refreshToken,
+        });
+        router.replace('/');
+      }
     }
   });
 
   console.log({ signupData });
 
   return (
-    <View style={[globalStyles.mainContainer, { width: '100%', flex: 1 }]}>
+    <KeyboardAwareScrollView contentContainerStyle={[globalStyles.mainContainer, { flexGrow: 1 }]}>
       <View
         style={[
           globalStyles.verticalContainer,
           {
             width: '100%',
             flex: 5,
-            justifyContent: 'flex-end',
           },
         ]}>
-        <Button
-          mode="contained"
-          style={{ width: '100%' }}
+        <TouchableOpacity
           onPress={pickImage}
-          disabled={signupData.loading}>
-          {getValues('avatar') ? (
+          disabled={signupData.loading}
+          style={{ marginBottom: 40, position: 'relative' }}>
+          {image && (
             <Avatar.Image
-              size={24}
-              source={{ uri: `data:image/jpeg;base64,${getValues('avatar')}` }}
+              size={185}
+              source={{ uri: image }}
+              style={{ backgroundColor: colors.elevation.level5 }}
             />
-          ) : (
-            'Pick Avatar'
           )}
-        </Button>
-        <FormInput control={control} name="name" placeholder="Name" errors={formState.errors} />
-        <FormInput
-          control={control}
-          name="username"
-          placeholder="Username"
-          errors={formState.errors}
-        />
-        <FormInput control={control} name="email" placeholder="Email" errors={formState.errors} />
-        <FormInput
-          control={control}
-          name="password"
-          placeholder="Password"
-          errors={formState.errors}
-        />
+          {!image && (
+            <Avatar.Icon
+              size={185}
+              icon="account"
+              style={{ backgroundColor: colors.elevation.level5 }}
+            />
+          )}
+          <View style={{ position: 'absolute', bottom: 10, right: 10 }}>
+            <IconButton
+              icon="pencil"
+              size={18}
+              onPress={pickImage}
+              disabled={signupData.loading}
+              iconColor={colors.background}
+              containerColor={colors.primary}
+            />
+          </View>
+        </TouchableOpacity>
+        <FormInput control={control} name="name" placeholder="Name" formState={formState} />
+        <FormInput control={control} name="username" placeholder="Username" formState={formState} />
+        <FormInput control={control} name="email" placeholder="Email" formState={formState} />
+        <FormInput control={control} name="password" placeholder="Password" formState={formState} />
 
         <Button
           mode="contained"
@@ -124,6 +146,9 @@ export default function SignUpPage() {
           disabled={!formState.isValid || signupData.loading}>
           Sign up
         </Button>
+        <HelperText type="error" padding="none">
+          {signupData.error?.message}
+        </HelperText>
       </View>
       <View
         style={[
@@ -141,6 +166,6 @@ export default function SignUpPage() {
           </Link>
         </Text>
       </View>
-    </View>
+    </KeyboardAwareScrollView>
   );
 }

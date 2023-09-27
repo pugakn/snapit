@@ -1,12 +1,21 @@
-import { Text } from 'react-native';
-import { Button, TextInput } from 'react-native-paper';
+import { View } from 'react-native';
+import { Button } from 'react-native-paper';
+
+import { globalStyles } from '../../../styles/global';
+import { Supabase } from '../../_layout';
 
 export default function Page() {
+  const signOut = () => {
+    Supabase.auth.signOut();
+  };
+
   return (
-    <>
-      <Text>Pageasdasd</Text>
-      <Button>Holsssssa</Button>
-      <TextInput></TextInput>
-    </>
+    <View style={globalStyles.mainContainer}>
+      <View style={[globalStyles.verticalContainer, { width: '100%' }]}>
+        <Button mode="contained" style={{ width: '100%' }} onPress={signOut}>
+          Sign out
+        </Button>
+      </View>
+    </View>
   );
 }
