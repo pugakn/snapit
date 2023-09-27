@@ -12,6 +12,7 @@ import { Avatar, Button, IconButton, Text, useTheme } from 'react-native-paper';
 import { FormInput } from '../components/formInput';
 import { useSignupMutation } from '../graphql';
 import { globalStyles } from '../styles/global';
+import { Supabase } from './_layout';
 
 const schema = Joi.object({
   name: Joi.string().min(1).required(),
@@ -67,7 +68,7 @@ export default function SignUpPage() {
 
   const handleSignUp = handleSubmit(async ({ name, username, password, avatar, email }) => {
     if (formState.isValid) {
-      await signup({
+      const res = await signup({
         variables: {
           name,
           username,
@@ -76,6 +77,13 @@ export default function SignUpPage() {
           email,
         },
       });
+
+      if (res.data?.signup?.accessToken && res.data?.signup?.refreshToken) {
+        await Supabase.auth.setSession({
+          access_token: res.data.signup.accessToken,
+          refresh_token: res.data.signup.refreshToken,
+        });
+      }
     }
   });
 
